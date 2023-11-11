@@ -1,1 +1,0 @@
-uvicorn --port 7777 app:app
