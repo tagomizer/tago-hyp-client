@@ -6,9 +6,9 @@ package org.topicquests.ks.tagomizer.hypothesis;
 import java.util.Iterator;
 import java.util.List;
 
-import org.topicquests.ks.identity.TagIdentifier;
 import org.topicquests.ks.tagomizer.TagomizerClientEnvironment;
 import org.topicquests.ks.tagomizer.api.ISQL;
+import org.topicquests.ks.tagomizer.api.util.TagIdentifier;
 import org.topicquests.pg.PostgresConnectionFactory;
 import org.topicquests.pg.api.IPostgresConnection;
 import org.topicquests.support.ResultPojo;

@@ -4,7 +4,6 @@
 package org.topicquests.ks.tagomizer.hypothesis;
 import java.util.*;
 
-import org.topicquests.ks.api.INodeTypes;
 import org.topicquests.ks.tagomizer.TagomizerClientEnvironment;
 import org.topicquests.ks.tagomizer.api.IAnalyzerListener;
 
@@ -187,7 +186,7 @@ public class Analyzer {
 			jx.put("text", text);
 			jx.put("created", created);
 			jx.put("user", user);
-			jx.put("nodeType", INodeTypes.ANNOTATION_TYPE);
+			jx.put("nodeType", "annotation_type");
 			
 			//we now have a processed object:
 			// annotation, text note, tags, provenance
