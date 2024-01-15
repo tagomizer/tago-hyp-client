@@ -10,8 +10,8 @@
 		api and annotations REST values -->
 	<parameter name="BaseURL" value="https://hypothes.is/api/search" />
 	
-	<parameter name="DatabaseName" value = "tagomizer_database" />
-	<parameter name="DatabaseSchema" value = "tq_tagomizer" />
+	<parameter name="DatabaseName" value = "pdtagomizer_database" />
+	<parameter name="DatabaseSchema" value = "public" />
 	
 	<!-- 
 		Must be determined from your hypothes.is account 
