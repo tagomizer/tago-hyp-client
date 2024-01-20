@@ -21,6 +21,7 @@ CREATE SEQUENCE IF NOT EXISTS public.doc_id_seq
 -- Create a schema to hide the proxy tables from public view.
 --
 CREATE SCHEMA IF NOT EXISTS public;
+GRANT ALL ON SCHEMA paradedb TO PUBLIC;
 GRANT ALL ON schema public TO tq_proxy;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO tq_proxy;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
@@ -62,14 +63,38 @@ create table if not exists public.document  (
 );
 
 GRANT ALL PRIVILEGES ON public.document TO tq_proxy;
-CREATE INDEX if not exists title_idx 
-	ON public.document
-	USING bm25 ((document.*))
-	WITH (
-	  key_field=bm25_id,
-	  text_fields=title
-	);
+
+CALL paradedb.create_bm25(
+        index_name => 'label_idx',
+        schema_name => 'public',
+        table_name => 'document',
+        key_field => 'bm25_id',
+        text_fields => '{title: {tokenizer: {type: "en_stem"}}, category: {}}'
+);
+
 --
+--	Annotations are text objects, abstracts. They go with URLs - specific documents.
+--	We do not pivot on Annotations; they are the content of a URL (resource) view
+--  Both text and annnotations go into this table
+--
+create table if not exists public.annotations  (
+   bm25_id BIGINT not null REFERENCES  public.document (bm25_id),
+   document_id TEXT not null REFERENCES public.document(document_id),
+   text text not null,
+   language varchar (3)
+);
+
+
+GRANT ALL PRIVILEGES ON public.annotations TO tq_proxy;
+create index if not exists anno_idx on public.annotations (document_id);
+
+CALL paradedb.create_bm25(
+        index_name => 'text_idx',
+        schema_name => 'public',
+        table_name => 'annotations',
+        key_field => 'bm25_id',
+        text_fields => '{text: {tokenizer: {type: "en_stem"}}, category: {}}'
+);
 --	A tag exists within the context of one or more documents.
 --	We pivot on tags.
 --
@@ -143,25 +168,7 @@ create index if not exists gttr_tid on public.group_tag_ref (tag_id);
 create index if not exists gttr_uid on public.group_tag_ref (group_id);
 
 
---
---	Annotations are text objects, abstracts. They go with URLs - specific documents.
---	We do not pivot on Annotations; they are the content of a URL (resource) view
---  Both text and annnotations go into this table
---
-create table if not exists public.annotations  (
-   bm25_id BIGINT not null REFERENCES  public.document (bm25_id),
-   text text not null,
-   language varchar (3)
-);
 
-GRANT ALL PRIVILEGES ON public.annotations TO tq_proxy;
-CREATE INDEX if not exists search_idx
-	ON public.annotations
-	USING bm25 ((annotations.*))
-	WITH (
-	  key_field='bm25_id',
-	  text_fields='text',
-);
 create table if not exists public.triples  (
     document_id text not null REFERENCES  public.document (document_id),
    	subject text not null,
