@@ -10,7 +10,7 @@
 		api and annotations REST values -->
 	<parameter name="BaseURL" value="https://hypothes.is/api/search" />
 	
-	<parameter name="DatabaseName" value = "pdtagomizer_database" />
+	<parameter name="DatabaseName" value = "dbtagomizer_database" />
 	<parameter name="DatabaseSchema" value = "public" />
 	
 	<!-- 
